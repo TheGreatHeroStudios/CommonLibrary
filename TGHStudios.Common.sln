@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGH.Common.Persistence", "T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGH.Common.ServiceIntegration", "TGH.Common.ServiceIntegration\TGH.Common.ServiceIntegration.csproj", "{5EC05E35-27E2-4802-B9D9-99E665223849}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGH.Common.Patterns", "TGH.Common.Patterns\TGH.Common.Patterns.csproj", "{9BF5D31F-73E6-4DF6-AEBA-538977B24DF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGH.Common.Patterns", "TGH.Common.Patterns\TGH.Common.Patterns.csproj", "{9BF5D31F-73E6-4DF6-AEBA-538977B24DF4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{66D9EEDA-CA3A-4879-B77B-8B86600FD26A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGH.Common.PatternsTests", "TGH.Common.PatternsTests\TGH.Common.PatternsTests.csproj", "{FE7AB5D3-A790-452B-AF1D-8EEEF1710C8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGH.Common.PatternsTests", "Testing\TGH.Common.PatternsTests\TGH.Common.PatternsTests.csproj", "{41491B49-69D7-40B9-B4B3-AA15B4C9ACA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,16 +37,16 @@ Global
 		{9BF5D31F-73E6-4DF6-AEBA-538977B24DF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BF5D31F-73E6-4DF6-AEBA-538977B24DF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BF5D31F-73E6-4DF6-AEBA-538977B24DF4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE7AB5D3-A790-452B-AF1D-8EEEF1710C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE7AB5D3-A790-452B-AF1D-8EEEF1710C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE7AB5D3-A790-452B-AF1D-8EEEF1710C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE7AB5D3-A790-452B-AF1D-8EEEF1710C8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41491B49-69D7-40B9-B4B3-AA15B4C9ACA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41491B49-69D7-40B9-B4B3-AA15B4C9ACA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41491B49-69D7-40B9-B4B3-AA15B4C9ACA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41491B49-69D7-40B9-B4B3-AA15B4C9ACA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{FE7AB5D3-A790-452B-AF1D-8EEEF1710C8D} = {66D9EEDA-CA3A-4879-B77B-8B86600FD26A}
+		{41491B49-69D7-40B9-B4B3-AA15B4C9ACA5} = {66D9EEDA-CA3A-4879-B77B-8B86600FD26A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C11EC441-9F55-4D6F-8C01-F50E289C7026}
