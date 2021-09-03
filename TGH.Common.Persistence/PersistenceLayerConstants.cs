@@ -1,7 +1,4 @@
-﻿using System.IO;
-using static System.Environment;
-
-namespace TGH.Common.Persistence
+﻿namespace TGH.Common.Persistence
 {
 	public static class PersistenceLayerConstants
 	{

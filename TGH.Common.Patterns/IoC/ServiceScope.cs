@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TGH.Common.Patterns.IoC
+﻿namespace TGH.Common.Patterns.IoC
 {
 	/// <summary>
 	///		Defines the relative lifetime of a service registered

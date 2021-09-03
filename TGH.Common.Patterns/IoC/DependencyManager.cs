@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using TGH.Common.Extensions;
 
 namespace TGH.Common.Patterns.IoC
@@ -83,10 +82,10 @@ namespace TGH.Common.Patterns.IoC
 		#region Static Constructor
 		static DependencyManager()
 		{
-			_registeredServices = 
+			_registeredServices =
 				new Dictionary<Type, Dictionary<Type, ServiceScope>>();
 
-			_resolutionStrategies = 
+			_resolutionStrategies =
 				new Dictionary<(Type registrationType, Type resolutionType), Func<object>>();
 
 			_cachedInstances = new Dictionary<(Type registrationType, Type resolutionType), object>();
@@ -128,7 +127,7 @@ namespace TGH.Common.Patterns.IoC
 		///		Gets a count of the valid instances (both managed and singleton)
 		///		which are currently cached for re-use within the container.
 		/// </summary>
-		public static int CachedInstanceCount => 
+		public static int CachedInstanceCount =>
 			_cachedInstances
 				.Where(cachedInstance => cachedInstance.Value != null)
 				.Count();
@@ -161,6 +160,47 @@ namespace TGH.Common.Patterns.IoC
 
 
 		#region Public Method(s)
+		/// <summary>
+		///		Determines whether a specified <typeparamref name="TRegistrationType"/>
+		///		is registered in the container.
+		/// </summary>
+		/// <typeparam name="TRegistrationType">
+		///		The type to look for in the container.
+		/// </typeparam>
+		/// <returns>
+		///		'True' if the specified type is registered 
+		///		in the container, otherwise 'False'.
+		/// </returns>
+		public static bool HasRegistration<TRegistrationType>()
+		{
+			return
+				_registeredServices.ContainsKey(typeof(TRegistrationType));
+		}
+
+
+		/// <summary>
+		///		Determines whether a specified <typeparamref name="TRegistrationType"/>
+		///		is registered in the container to resolve a type of <typeparamref name="TResolutionType"/>.
+		/// </summary>
+		/// <typeparam name="TRegistrationType">
+		///		The registration type to look for in the container.
+		/// </typeparam>
+		/// <typeparam name="TResolutionType">
+		///		The type which should be resolvable for the 
+		///		provided <typeparamref name="TRegistrationType"/>
+		/// </typeparam>
+		/// <returns>
+		///		'True' if the specified type is registered in the container and is capable of 
+		///		resolving an instance of type <typeparamref name="TResolutionType"/>, otherwise 'False'.
+		/// </returns>
+		public static bool HasRegistration<TRegistrationType, TResolutionType>()
+		{
+			return
+				_registeredServices.ContainsKey(typeof(TRegistrationType)) &&
+				_registeredServices[typeof(TRegistrationType)].ContainsKey(typeof(TResolutionType));
+		}
+
+
 		/// <summary>
 		///		Adds a registration for <typeparamref name="TRegistrationType"/> to
 		///		be resolved as an instance of <typeparamref name="TResolutionType"/> wherever
@@ -249,13 +289,13 @@ namespace TGH.Common.Patterns.IoC
 			(Type registrationType, Type resolutionType) registrationKeyTuple =
 				(typeof(TRegistrationType), typeof(TResolutionType));
 
-			if(!_resolutionStrategies.ContainsKey(registrationKeyTuple))
+			if (!_resolutionStrategies.ContainsKey(registrationKeyTuple))
 			{
 				//If the resolution strategy dictionary does not yet contain a strategy 
 				//for the registration and resolution tuple being registered, add it.
 				_resolutionStrategies.Add(registrationKeyTuple, resolutionStrategy);
 			}
-			else if(overwriteExisting)
+			else if (overwriteExisting)
 			{
 				//If the resolution strategy does already exist, but can be overwritten, update it.
 				_resolutionStrategies[registrationKeyTuple] = resolutionStrategy;
@@ -306,7 +346,7 @@ namespace TGH.Common.Patterns.IoC
 			where TRegistrationType : class
 		{
 			//Resolve the service registration which will be used to resolve an instance
-			KeyValuePair<Type, ServiceScope> resolvedRegistration = 
+			KeyValuePair<Type, ServiceScope> resolvedRegistration =
 				ResolveServiceRegistration<TRegistrationType>(minimumScope);
 
 			(Type registeredType, Type resolutionType) registrationTuple =
@@ -359,7 +399,7 @@ namespace TGH.Common.Patterns.IoC
 
 			//Based on the scope of the resolved registration, determine whether
 			//to resolve a new instance, or retrieve one from the cache.
-			TResolutionType serviceInstance = 
+			TResolutionType serviceInstance =
 				ResolveServiceInstance(registrationTuple, resolvedRegistration.Value) as TResolutionType;
 
 			return serviceInstance;
@@ -386,11 +426,11 @@ namespace TGH.Common.Patterns.IoC
 					)
 					.ToList();
 
-			for(int i = managedCacheKeys.Count - 1; i >= 0; i--)
+			for (int i = managedCacheKeys.Count - 1; i >= 0; i--)
 			{
 				//Iterate over the managed services in the cache and invalidate each one
 				_cachedInstances[managedCacheKeys[i]] = null;
-			}		
+			}
 		}
 
 
@@ -438,7 +478,7 @@ namespace TGH.Common.Patterns.IoC
 					)
 				);
 			}
-			else if(!typeof(TResolutionType).IsAssignableTo(typeof(TRegistrationType)))
+			else if (!typeof(TResolutionType).IsAssignableTo(typeof(TRegistrationType)))
 			{
 				//Also, validate that an instance of the proposed resolution 
 				//type can be assigned to a variable of the registration type
@@ -494,7 +534,7 @@ namespace TGH.Common.Patterns.IoC
 					//message for the exception based on the type of the parameter...
 					string errorMessage;
 
-					if(param.ParameterType.IsPrimitiveOrNullablePrimitive())
+					if (param.ParameterType.IsPrimitiveOrNullablePrimitive())
 					{
 						//If the parameter is a primitive type, format the error to
 						//inform the caller that primitive types can't be registered.
@@ -583,8 +623,8 @@ namespace TGH.Common.Patterns.IoC
 				_registeredServices[typeof(TRegistrationType)].Add(typeof(TResolutionType), scope);
 			}
 		}
-		
-		
+
+
 		private static KeyValuePair<Type, ServiceScope> ResolveServiceRegistration<TRegistrationType>
 		(
 			ServiceScope minimumScope = ServiceScope.Volatile,
@@ -594,7 +634,7 @@ namespace TGH.Common.Patterns.IoC
 		{
 			KeyValuePair<Type, ServiceScope> resolvedType = default;
 
-			if(!_registeredServices.ContainsKey(typeof(TRegistrationType)))
+			if (!_registeredServices.ContainsKey(typeof(TRegistrationType)))
 			{
 				//Validate that the specified registration type is registered in the container
 				throw new ArgumentException
@@ -606,7 +646,7 @@ namespace TGH.Common.Patterns.IoC
 					)
 				);
 			}
-			else if(expectedType == null)
+			else if (expectedType == null)
 			{
 				//If no expected type is specified, resolve the first 
 				//suitable type available for the specified registered type.
@@ -615,7 +655,7 @@ namespace TGH.Common.Patterns.IoC
 						.FirstOrDefault(registration => registration.Value >= minimumScope);
 
 				//Validate that a suitable registered type was resolved
-				if(resolvedType.Key == null)
+				if (resolvedType.Key == null)
 				{
 					throw new ArgumentException
 					(
@@ -631,7 +671,7 @@ namespace TGH.Common.Patterns.IoC
 			{
 				//If an expected resolution type is specified,
 				//first validate that the type is registered.
-				if(!_registeredServices[typeof(TRegistrationType)].ContainsKey(expectedType))
+				if (!_registeredServices[typeof(TRegistrationType)].ContainsKey(expectedType))
 				{
 					throw new ArgumentException
 					(
@@ -650,7 +690,7 @@ namespace TGH.Common.Patterns.IoC
 					_registeredServices[typeof(TRegistrationType)]
 						.FirstOrDefault
 						(
-							registration => 
+							registration =>
 								registration.Value >= minimumScope &&
 								registration.Key.Equals(expectedType)
 						);
@@ -692,7 +732,7 @@ namespace TGH.Common.Patterns.IoC
 				//If so, re-use it
 				resolvedInstance = _cachedInstances[serviceRegistration];
 			}
-			else if(_resolutionStrategies.ContainsKey(serviceRegistration))
+			else if (_resolutionStrategies.ContainsKey(serviceRegistration))
 			{
 				//If a cached instance can not be used (either because the service 
 				//scope is 'Volatile' or no previous instance has been cached), check 
@@ -711,12 +751,12 @@ namespace TGH.Common.Patterns.IoC
 			//check whether or not the resolved instance should be cached
 			if (serviceScope > ServiceScope.Volatile)
 			{
-				if(!_cachedInstances.ContainsKey(serviceRegistration))
+				if (!_cachedInstances.ContainsKey(serviceRegistration))
 				{
 					//If the service has never been cached before, create a new entry for it.
 					_cachedInstances.Add(serviceRegistration, resolvedInstance);
 				}
-				else if(_cachedInstances[serviceRegistration] != resolvedInstance)
+				else if (_cachedInstances[serviceRegistration] != resolvedInstance)
 				{
 					//If the cached instance is not the same as
 					//the one resolved, update the cached instance
