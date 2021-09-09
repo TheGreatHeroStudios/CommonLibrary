@@ -7,11 +7,12 @@ using System.Text;
 
 namespace TGH.Common.Persistence.Contexts
 {
-	public class SqliteDbContext : DbContext
+	public abstract class SqliteDbContext : DbContext
 	{
 		#region Non-Public Member(s)
 		private string _targetDatabaseRootedFilePath;
 		private string _sourceDatabaseTemplateFilePath;
+		private Assembly _configurationAssembly;
 		#endregion
 
 
@@ -24,7 +25,7 @@ namespace TGH.Common.Persistence.Contexts
 		/// <remarks>
 		///		Using this constructor overload assumes that the Sqlite database
 		///		already exists at the rooted path specified by the parameter 
-		///		<paramref name="targetDatabaseRootedPath"/>.  If the file does
+		///		<paramref name="targetDatabaseRootedFilePath"/>.  If the file does
 		///		not exist at this path, an <seealso cref="ApplicationLayerException"/> 
 		///		for the persistence layer is thrown when the context is configured.
 		///		<para/>
@@ -33,13 +34,24 @@ namespace TGH.Common.Persistence.Contexts
 		///		source database file path to be specified, allowing it to
 		///		be copied to the target directory if it does not yet exist.
 		/// </remarks>
-		/// <param name="targetDatabaseRootedPath">
+		/// <param name="targetDatabaseRootedFilePath">
 		///		The rooted path (including file name) where the Sqlite
 		///		database targeted by this instance of the context exists.
 		/// </param>
-		public SqliteDbContext(string targetDatabaseRootedPath)
+		/// <param name="configurationAssembly">
+		///		The assembly that contains the classes used to configure
+		///		<seealso cref="DbSet{TEntity}"/> properties for the context.
+		///		When omitted, it is assumed that configuration logic is
+		///		overridden on the derived context class.
+		/// </param>
+		public SqliteDbContext
+		(
+			string targetDatabaseRootedFilePath,
+			Assembly configurationAssembly = null
+		)
 		{
-			_targetDatabaseRootedFilePath = targetDatabaseRootedPath;
+			_targetDatabaseRootedFilePath = targetDatabaseRootedFilePath;
+			_configurationAssembly = configurationAssembly;
 		}
 
 
@@ -48,27 +60,40 @@ namespace TGH.Common.Persistence.Contexts
 		///		an underlying Sqlite database as its storage mechanism.
 		/// </summary>
 		/// <remarks>
-		///		If the file path supplied for the <paramref name="targetDatabaseRootedPath"/>
+		///		If the file path supplied for the <paramref name="targetDatabaseRootedFilePath"/>
 		///		parameter does not exist, the context will copy the file from the path
-		///		supplied for the <paramref name="sourceDatabaseTemplatePath"/> parameter.
+		///		supplied for the <paramref name="sourceDatabaseTemplateFilePath"/> parameter.
 		///		<para/>
 		///		If neither of these paths resolve to a valid file location,
 		///		an <seealso cref="ApplicationLayerException"/> for the 
 		///		persistence layer is thrown when the context is configured.
 		/// </remarks>
-		/// <param name="targetDatabaseRootedPath">
+		/// <param name="targetDatabaseRootedFilePath">
 		///		The rooted path (including file name) where the Sqlite
 		///		database targeted by this instance of the context exists.
 		/// </param>
-		/// <param name="sourceDatabaseTemplatePath"></param>
+		/// <param name="sourceDatabaseTemplateFilePath">
+		///		The rooted path (including file name) where the template Sqlite 
+		///		database exists.  If the <paramref name="targetDatabaseRootedFilePath"/>
+		///		refers to a file that does not exist, the file specified by this
+		///		parameter will be copied to the target directory.
+		/// </param>
+		/// <param name="configurationAssembly">
+		///		The assembly that contains the classes used to configure
+		///		<seealso cref="DbSet{TEntity}"/> properties for the context.
+		///		When omitted, it is assumed that configuration logic is
+		///		overridden on the derived context class.
+		/// </param>
 		public SqliteDbContext
 		(
-			string targetDatabaseRootedPath,
-			string sourceDatabaseTemplatePath
+			string targetDatabaseRootedFilePath,
+			string sourceDatabaseTemplateFilePath,
+			Assembly configurationAssembly = null
 		)
 		{
-			_targetDatabaseRootedFilePath = targetDatabaseRootedPath;
-			_sourceDatabaseTemplateFilePath = sourceDatabaseTemplatePath;
+			_targetDatabaseRootedFilePath = targetDatabaseRootedFilePath;
+			_sourceDatabaseTemplateFilePath = sourceDatabaseTemplateFilePath;
+			_configurationAssembly = configurationAssembly;
 		}
 		#endregion
 
@@ -108,8 +133,11 @@ namespace TGH.Common.Persistence.Contexts
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			//Find and apply all 'IEntityTypeConfiguration's defined in the persistence assembly
-			modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+			if (_configurationAssembly != null)
+			{
+				//Find and apply all 'IEntityTypeConfiguration's defined in the specified assembly
+				modelBuilder.ApplyConfigurationsFromAssembly(_configurationAssembly);
+			}
 
 			base.OnModelCreating(modelBuilder);
 		}
