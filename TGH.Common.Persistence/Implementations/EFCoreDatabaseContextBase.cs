@@ -65,11 +65,21 @@ namespace TGH.Common.Persistence.Implementations
 		}
 
 
-		public int Count<TEntityType>()
+		public int RecordCount<TEntityType>()
 			where TEntityType : class
 		{
 			return
 				Set<TEntityType>().Count();
+		}
+
+
+		public int RecordCount<TEntityType>(Func<TEntityType, bool> predicate)
+			where TEntityType : class
+		{
+			return
+				Set<TEntityType>()
+					.Where(predicate)
+					.Count();
 		}
 
 
@@ -142,6 +152,34 @@ namespace TGH.Common.Persistence.Implementations
 			}
 
 			return initialPayload.Count();
+		}
+
+
+		public int Delete<TEntityType>
+		(
+			Func<TEntityType, bool> predicate,
+			bool deferCommit = false
+		)
+			where TEntityType : class
+		{
+			int entityCount = 0;
+
+			if(predicate != null)
+			{
+				entityCount = RecordCount(predicate);
+
+				IEnumerable<TEntityType> entitiesToDelete = 
+					Set<TEntityType>().Where(predicate);
+
+				RemoveRange(entitiesToDelete);
+
+				if(!deferCommit)
+				{
+					CommitChanges();
+				}
+			}
+
+			return entityCount;
 		}
 
 

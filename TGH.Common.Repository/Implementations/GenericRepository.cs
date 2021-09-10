@@ -24,11 +24,19 @@ namespace TGH.Common.Repository.Implementations
 
 
 		#region 'IGenericRepository' Implementation
-		public int Count<TEntityType>()
+		public int RecordCount<TEntityType>()
 			where TEntityType : class
 		{
 			return
-				_context.Count<TEntityType>();
+				_context.RecordCount<TEntityType>();
+		}
+
+
+		public int RecordCount<TEntityType>(Func<TEntityType, bool> predicate)
+			where TEntityType : class
+		{
+			return
+				_context.RecordCount(predicate);
 		}
 
 
@@ -64,6 +72,14 @@ namespace TGH.Common.Repository.Implementations
 			_context.CommitChanges();
 
 			return persistedEntityCount;
+		}
+
+
+		public int DeleteEntities<TEntityType>(Func<TEntityType, bool> predicate)
+			where TEntityType : class
+		{
+			return 
+				_context.Delete(predicate, false);
 		}
 		#endregion
 	}
