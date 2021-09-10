@@ -40,5 +40,35 @@ namespace TGH.Common.Extensions
 							resultSelector(joinedResult.leftItem, rightItem)
 					);
 		}
+
+
+		public static IEnumerable<TResult> LeftAntiJoin<TLeft, TRight, TKey, TResult>
+		(
+			this IEnumerable<TLeft> left,
+			IEnumerable<TRight> right,
+			Func<TLeft, TKey> leftKeySelector,
+			Func<TRight, TKey> rightKeySelector,
+			Func<TLeft, TResult> resultSelector
+		)
+			where TResult : class
+		{
+			return
+				left
+					.LeftJoin
+					(
+						right,
+						leftKeySelector,
+						rightKeySelector,
+						(left, right) =>
+							right == null ?
+								resultSelector(left) :
+								null
+					)
+					.Where
+					(
+						result => 
+							result != null
+					);
+		}
 	}
 }

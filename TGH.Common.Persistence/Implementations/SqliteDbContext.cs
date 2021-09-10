@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using TGH.Common.Persistence.Interfaces;
 
-namespace TGH.Common.Persistence.Contexts
+namespace TGH.Common.Persistence.Implementations
 {
-	public abstract class SqliteDbContext : DbContext
+	public abstract class SqliteDbContext : EFCoreDatabaseContextBase
 	{
 		#region Non-Public Member(s)
 		private string _targetDatabaseRootedFilePath;
@@ -150,7 +151,7 @@ namespace TGH.Common.Persistence.Contexts
 		{
 			//Before doing anything, check to make sure that a valid
 			//template database file path was specified from which to copy.
-			if(_sourceDatabaseTemplateFilePath == null)
+			if (_sourceDatabaseTemplateFilePath == null)
 			{
 				//If no template file was specified, throw an 'ApplicationLayerException'
 				throw new ApplicationLayerException
