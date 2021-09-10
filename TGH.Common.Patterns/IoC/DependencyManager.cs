@@ -339,7 +339,7 @@ namespace TGH.Common.Patterns.IoC
 		///		A concrete instance of a service deriving from (or implementing)
 		///		<typeparamref name="TRegistrationType"/> resolved from the container.
 		/// </returns>
-		public static object ResolveService<TRegistrationType>
+		public static TRegistrationType ResolveService<TRegistrationType>
 		(
 			ServiceScope minimumScope = ServiceScope.Volatile
 		)
@@ -354,7 +354,9 @@ namespace TGH.Common.Patterns.IoC
 
 			//Based on the scope of the resolved registration, determine whether
 			//to resolve a new instance, or retrieve one from the cache.
-			object serviceInstance = ResolveServiceInstance(registrationTuple, resolvedRegistration.Value);
+			TRegistrationType serviceInstance = 
+				(TRegistrationType)
+					ResolveServiceInstance(registrationTuple, resolvedRegistration.Value);
 
 			return serviceInstance;
 		}
