@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using TGH.Common.Extensions;
@@ -32,7 +33,7 @@ namespace TGH.Common.Persistence.Implementations
 					.Join
 					(
 						payloadKeys,
-						trackedEntity => keySelector(trackedEntity),
+						keySelector,
 						payloadKey => payloadKey,
 						(trackedEntity, payloadKey) => trackedEntity
 					)
@@ -61,6 +62,14 @@ namespace TGH.Common.Persistence.Implementations
 						trackedEntity => keySelector(trackedEntity),
 						(initialEntity, trackedEntity) => initialEntity
 					);
+		}
+
+
+		public int Count<TEntityType>()
+			where TEntityType : class
+		{
+			return
+				Set<TEntityType>().Count();
 		}
 
 

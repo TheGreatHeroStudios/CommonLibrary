@@ -24,6 +24,14 @@ namespace TGH.Common.Repository.Implementations
 
 
 		#region 'IGenericRepository' Implementation
+		public int Count<TEntityType>()
+			where TEntityType : class
+		{
+			return
+				_context.Count<TEntityType>();
+		}
+
+
 		public int PersistEntities<TEntityType, TKeyType>
 		(
 			IEnumerable<TEntityType> initialPayload,

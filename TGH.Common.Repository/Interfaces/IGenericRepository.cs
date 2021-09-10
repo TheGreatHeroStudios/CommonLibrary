@@ -7,6 +7,22 @@ namespace TGH.Common.Repository.Interfaces
 	public interface IGenericRepository
 	{
 		/// <summary>
+		///		Returns the number of entities of a given
+		///		<typeparamref name="TEntityType"/> currently 
+		///		stored in the underlying database context.
+		/// </summary>
+		/// <typeparam name="TEntityType">
+		///		The type of entity for which to retrieve a count.
+		/// </typeparam>
+		/// <returns>
+		///		The number of <typeparamref name="TEntityType"/>s
+		///		currently stored in the underlying database context.
+		/// </returns>
+		int Count<TEntityType>()
+			where TEntityType : class;
+
+
+		/// <summary>
 		///		Saves a collection of <typeparamref name="TEntityType"/>
 		///		to the underlying database context.
 		/// </summary>
