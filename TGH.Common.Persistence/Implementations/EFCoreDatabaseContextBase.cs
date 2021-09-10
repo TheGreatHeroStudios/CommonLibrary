@@ -13,7 +13,7 @@ namespace TGH.Common.Persistence.Implementations
 	public abstract class EFCoreDatabaseContextBase : DbContext, IDatabaseContext
 	{
 		#region 'IDatabaseContext' Implementation
-		public void DividePayload<TEntityType, TKeyType>
+		public void DerivePersistPayloads<TEntityType, TKeyType>
 		(
 			IEnumerable<TEntityType> initialPayload, 
 			Func<TEntityType, TKeyType> keySelector, 
@@ -65,7 +65,7 @@ namespace TGH.Common.Persistence.Implementations
 		}
 
 
-		public int RecordCount<TEntityType>()
+		public int Count<TEntityType>()
 			where TEntityType : class
 		{
 			return
@@ -73,7 +73,7 @@ namespace TGH.Common.Persistence.Implementations
 		}
 
 
-		public int RecordCount<TEntityType>(Func<TEntityType, bool> predicate)
+		public int Count<TEntityType>(Func<TEntityType, bool> predicate)
 			where TEntityType : class
 		{
 			return
@@ -83,7 +83,7 @@ namespace TGH.Common.Persistence.Implementations
 		}
 
 
-		public int Add<TEntityType>
+		public int Create<TEntityType>
 		(
 			IEnumerable<TEntityType> initialPayload, 
 			bool deferCommit = false
@@ -98,6 +98,18 @@ namespace TGH.Common.Persistence.Implementations
 			}
 
 			return initialPayload.Count();
+		}
+
+
+
+		public IEnumerable<TEntityType> Read<TEntityType>
+		(
+			Func<TEntityType, bool> predicate
+		)
+			where TEntityType : class
+		{
+			return
+				Set<TEntityType>().Where(predicate);
 		}
 
 
@@ -166,7 +178,7 @@ namespace TGH.Common.Persistence.Implementations
 
 			if(predicate != null)
 			{
-				entityCount = RecordCount(predicate);
+				entityCount = Count(predicate);
 
 				IEnumerable<TEntityType> entitiesToDelete = 
 					Set<TEntityType>().Where(predicate);

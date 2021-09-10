@@ -30,7 +30,7 @@ namespace TGH.Common.Persistence.Interfaces
 		/// <param name="updatePayload">
 		///		The output collection of entities to be updated in the database.
 		/// </param>
-		void DividePayload<TEntityType, TKeyType>
+		void DerivePersistPayloads<TEntityType, TKeyType>
 		(
 			IEnumerable<TEntityType> initialPayload,
 			Func<TEntityType, TKeyType> keySelector,
@@ -53,7 +53,7 @@ namespace TGH.Common.Persistence.Interfaces
 		///		The number of <typeparamref name="TEntityType"/>s
 		///		currently stored in the underlying database context.
 		/// </returns>
-		int RecordCount<TEntityType>()
+		int Count<TEntityType>()
 			where TEntityType : class;
 
 
@@ -75,7 +75,7 @@ namespace TGH.Common.Persistence.Interfaces
 		///		The number of <typeparamref name="TEntityType"/>s
 		///		currently stored in the underlying database context.
 		/// </returns>
-		int RecordCount<TEntityType>(Func<TEntityType, bool> predicate)
+		int Count<TEntityType>(Func<TEntityType, bool> predicate)
 			where TEntityType : class;
 
 
@@ -100,10 +100,32 @@ namespace TGH.Common.Persistence.Interfaces
 		/// <returns>
 		///		The number of entities added.
 		/// </returns>
-		int Add<TEntityType>
+		int Create<TEntityType>
 		(
 			IEnumerable<TEntityType> payload,
 			bool deferCommit = false
+		)
+			where TEntityType : class;
+
+
+		/// <summary>
+		///		Retrieves a set of entities from the database
+		///		matching the supplied <paramref name="predicate"/>
+		/// </summary>
+		/// <typeparam name="TEntityType">
+		///		The type of entity to retrieve
+		/// </typeparam>
+		/// <param name="predicate">
+		///		A function to be applied to each item in the database
+		///		to determine whether or not it should be retrieved.
+		/// </param>
+		/// <returns>
+		///		A collection of <typeparamref name="TEntityType"/>
+		///		whose items match the specified <paramref name="predicate"/>
+		/// </returns>
+		IEnumerable<TEntityType> Read<TEntityType>
+		(
+			Func<TEntityType, bool> predicate
 		)
 			where TEntityType : class;
 

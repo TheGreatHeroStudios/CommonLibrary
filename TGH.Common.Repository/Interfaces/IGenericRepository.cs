@@ -18,7 +18,7 @@ namespace TGH.Common.Repository.Interfaces
 		///		The number of <typeparamref name="TEntityType"/>s
 		///		currently stored in the underlying database context.
 		/// </returns>
-		int RecordCount<TEntityType>()
+		int GetRecordCount<TEntityType>()
 			where TEntityType : class;
 
 
@@ -40,7 +40,29 @@ namespace TGH.Common.Repository.Interfaces
 		///		The number of <typeparamref name="TEntityType"/>s
 		///		currently stored in the underlying database context.
 		/// </returns>
-		int RecordCount<TEntityType>(Func<TEntityType, bool> predicate)
+		int GetRecordCount<TEntityType>(Func<TEntityType, bool> predicate)
+			where TEntityType : class;
+
+
+		/// <summary>
+		///		Retrieves a set of entities from the database
+		///		matching the supplied <paramref name="predicate"/>
+		/// </summary>
+		/// <typeparam name="TEntityType">
+		///		The type of entity to retrieve
+		/// </typeparam>
+		/// <param name="predicate">
+		///		A function to be applied to each item in the database
+		///		to determine whether or not it should be retrieved.
+		/// </param>
+		/// <returns>
+		///		A collection of <typeparamref name="TEntityType"/>
+		///		whose items match the specified <paramref name="predicate"/>
+		/// </returns>
+		IEnumerable<TEntityType> RetrieveEntities<TEntityType>
+		(
+			Func<TEntityType, bool> predicate
+		)
 			where TEntityType : class;
 
 

@@ -24,19 +24,30 @@ namespace TGH.Common.Repository.Implementations
 
 
 		#region 'IGenericRepository' Implementation
-		public int RecordCount<TEntityType>()
+		public int GetRecordCount<TEntityType>()
 			where TEntityType : class
 		{
 			return
-				_context.RecordCount<TEntityType>();
+				_context.Count<TEntityType>();
 		}
 
 
-		public int RecordCount<TEntityType>(Func<TEntityType, bool> predicate)
+		public int GetRecordCount<TEntityType>(Func<TEntityType, bool> predicate)
 			where TEntityType : class
 		{
 			return
-				_context.RecordCount(predicate);
+				_context.Count(predicate);
+		}
+
+
+		public IEnumerable<TEntityType> RetrieveEntities<TEntityType>
+		(
+			Func<TEntityType, bool> predicate
+		)
+			where TEntityType : class
+		{
+			return
+				_context.Read(predicate);
 		}
 
 
@@ -55,7 +66,7 @@ namespace TGH.Common.Repository.Implementations
 			//Divide the initial payload into those
 			//entities to be added and those to be updated
 			_context
-				.DividePayload
+				.DerivePersistPayloads
 				(
 					initialPayload,
 					keySelector,
@@ -64,7 +75,7 @@ namespace TGH.Common.Repository.Implementations
 				);
 
 			//Add the new entities to the underlying context
-			int persistedEntityCount = _context.Add(addPayload, true);
+			int persistedEntityCount = _context.Create(addPayload, true);
 
 			//Update existing entities on the underlying context
 			persistedEntityCount += _context.Update(updatePayload, keySelector, true);
