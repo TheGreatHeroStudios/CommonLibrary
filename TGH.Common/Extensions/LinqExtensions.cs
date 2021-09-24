@@ -1,16 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace TGH.Common.Extensions
 {
 	public static class LinqExtensions
 	{
+		public static void Add<TKey, TValue>
+		(
+			this Dictionary<TKey, TValue> dictionary,
+			KeyValuePair<TKey, TValue> newEntry
+		)
+		{
+			if(!dictionary.ContainsKey(newEntry.Key))
+			{
+				dictionary.Add(newEntry.Key, newEntry.Value);
+			}
+		}
+
+
 		public static bool In<TItem>(this TItem item, IEnumerable<TItem> collection)
 		{
 			return
 				collection.Contains(item);
+		}
+
+
+		public static IEnumerable<TResult> LeftAntiJoin<TLeft, TRight, TKey, TResult>
+		(
+			this IEnumerable<TLeft> left,
+			IEnumerable<TRight> right,
+			Func<TLeft, TKey> leftKeySelector,
+			Func<TRight, TKey> rightKeySelector,
+			Func<TLeft, TResult> resultSelector
+		)
+			where TResult : class
+		{
+			return
+				left
+					.LeftJoin
+					(
+						right,
+						leftKeySelector,
+						rightKeySelector,
+						(left, right) =>
+							right == null ?
+								resultSelector(left) :
+								null
+					)
+					.Where
+					(
+						result =>
+							result != null
+					);
 		}
 
 
@@ -42,32 +84,17 @@ namespace TGH.Common.Extensions
 		}
 
 
-		public static IEnumerable<TResult> LeftAntiJoin<TLeft, TRight, TKey, TResult>
+		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>
 		(
-			this IEnumerable<TLeft> left,
-			IEnumerable<TRight> right,
-			Func<TLeft, TKey> leftKeySelector,
-			Func<TRight, TKey> rightKeySelector,
-			Func<TLeft, TResult> resultSelector
+			this IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs
 		)
-			where TResult : class
 		{
 			return
-				left
-					.LeftJoin
+				keyValuePairs
+					.ToDictionary
 					(
-						right,
-						leftKeySelector,
-						rightKeySelector,
-						(left, right) =>
-							right == null ?
-								resultSelector(left) :
-								null
-					)
-					.Where
-					(
-						result => 
-							result != null
+						kvp => kvp.Key,
+						kvp => kvp.Value
 					);
 		}
 	}

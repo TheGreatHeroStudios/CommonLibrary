@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
-using TGH.Common.Persistence.Interfaces;
 
 namespace TGH.Common.Persistence.Implementations
 {

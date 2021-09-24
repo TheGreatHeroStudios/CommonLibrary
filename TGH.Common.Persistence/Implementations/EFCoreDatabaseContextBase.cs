@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using TGH.Common.Extensions;
 using TGH.Common.Persistence.Interfaces;
 
@@ -15,9 +13,9 @@ namespace TGH.Common.Persistence.Implementations
 		#region 'IDatabaseContext' Implementation
 		public void DerivePersistPayloads<TEntityType, TKeyType>
 		(
-			IEnumerable<TEntityType> initialPayload, 
-			Func<TEntityType, TKeyType> keySelector, 
-			out IEnumerable<TEntityType> addPayload, 
+			IEnumerable<TEntityType> initialPayload,
+			Func<TEntityType, TKeyType> keySelector,
+			out IEnumerable<TEntityType> addPayload,
 			out IEnumerable<TEntityType> updatePayload
 		)
 			where TEntityType : class
@@ -85,14 +83,14 @@ namespace TGH.Common.Persistence.Implementations
 
 		public int Create<TEntityType>
 		(
-			IEnumerable<TEntityType> initialPayload, 
+			IEnumerable<TEntityType> initialPayload,
 			bool deferCommit = false
-		) 
+		)
 			where TEntityType : class
 		{
 			AddRange(initialPayload);
 
-			if(!deferCommit)
+			if (!deferCommit)
 			{
 				CommitChanges();
 			}
@@ -118,7 +116,7 @@ namespace TGH.Common.Persistence.Implementations
 			IEnumerable<TEntityType> initialPayload,
 			Func<TEntityType, TKeyType> keySelector,
 			bool deferCommit = false
-		) 
+		)
 			where TEntityType : class
 			where TKeyType : struct
 		{
@@ -139,7 +137,7 @@ namespace TGH.Common.Persistence.Implementations
 
 			//Iterate over the entities requiring a memberwise copy, and copy its 
 			//properties from the untracked payload entity to the tracked entity
-			foreach(var (untracked, tracked) in copyPayload)
+			foreach (var (untracked, tracked) in copyPayload)
 			{
 				CopyEntityProperties(untracked, tracked);
 			}
@@ -176,16 +174,16 @@ namespace TGH.Common.Persistence.Implementations
 		{
 			int entityCount = 0;
 
-			if(predicate != null)
+			if (predicate != null)
 			{
 				entityCount = Count(predicate);
 
-				IEnumerable<TEntityType> entitiesToDelete = 
+				IEnumerable<TEntityType> entitiesToDelete =
 					Set<TEntityType>().Where(predicate);
 
 				RemoveRange(entitiesToDelete);
 
-				if(!deferCommit)
+				if (!deferCommit)
 				{
 					CommitChanges();
 				}
@@ -206,7 +204,7 @@ namespace TGH.Common.Persistence.Implementations
 		#region Non-Public Method(s)
 		private void CopyEntityProperties<TEntityType>
 		(
-			TEntityType untrackedEntity, 
+			TEntityType untrackedEntity,
 			TEntityType trackedEntity
 		)
 		{
@@ -226,7 +224,7 @@ namespace TGH.Common.Persistence.Implementations
 
 			//Copy the value of each 'copyable' property
 			//from the untracked entity to the tracked entity
-			foreach(PropertyInfo property in copyProperties)
+			foreach (PropertyInfo property in copyProperties)
 			{
 				property.SetValue(trackedEntity, property.GetValue(untrackedEntity));
 			}

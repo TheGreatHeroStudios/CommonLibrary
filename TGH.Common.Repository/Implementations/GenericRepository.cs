@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using TGH.Common.Persistence.Interfaces;
 using TGH.Common.Repository.Interfaces;
 
@@ -56,7 +55,7 @@ namespace TGH.Common.Repository.Implementations
 			IEnumerable<TEntityType> initialPayload,
 			Func<TEntityType, TKeyType> keySelector
 
-		) 
+		)
 			where TEntityType : class
 			where TKeyType : struct
 		{
@@ -89,7 +88,7 @@ namespace TGH.Common.Repository.Implementations
 		public int DeleteEntities<TEntityType>(Func<TEntityType, bool> predicate)
 			where TEntityType : class
 		{
-			return 
+			return
 				_context.Delete(predicate, false);
 		}
 		#endregion

@@ -354,7 +354,7 @@ namespace TGH.Common.Patterns.IoC
 
 			//Based on the scope of the resolved registration, determine whether
 			//to resolve a new instance, or retrieve one from the cache.
-			TRegistrationType serviceInstance = 
+			TRegistrationType serviceInstance =
 				(TRegistrationType)
 					ResolveServiceInstance(registrationTuple, resolvedRegistration.Value);
 
