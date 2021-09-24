@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\TGH.Common.DataStructures\TGH.Common.DataStructures.csproj" />
+    <ProjectReference Include="..\..\TGH.Common\TGH.Common.csproj" />
   </ItemGroup>
 
 </Project>

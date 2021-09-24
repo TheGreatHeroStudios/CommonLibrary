@@ -73,7 +73,18 @@ namespace TGH.Common.DataStructures
 				throw new ArgumentNullException(nameof(item));
 			}
 
-			return _rootNode.Find(item, _searchMethod);
+
+			//Iterate over the tree (based on preferred search order) until the 
+			//specified item has been found or the collection has been exhausted.
+			foreach (TItemType iteratedItem in this)
+			{
+				if(iteratedItem.Equals(item))
+				{
+					return iteratedItem;
+				}
+			}
+
+			return null;
 		}
 		#endregion
 

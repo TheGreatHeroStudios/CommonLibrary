@@ -27,6 +27,8 @@ namespace TGH.Common.DataStructures
 		public TItemType Data { get; set; }
 		public BinaryTreeNode<TItemType> LeftChildNode { get; set; }
 		public BinaryTreeNode<TItemType> RightChildNode { get; set; }
+		public bool IsLeafNode => 
+			LeftChildNode == null && RightChildNode == null;
 		#endregion
 
 
@@ -145,7 +147,7 @@ namespace TGH.Common.DataStructures
 		}
 
 
-		public TItemType Find(TItemType item, SearchMethod searchMethod)
+		public TItemType Find(TItemType item)
 		{
 			TItemType foundItem = null;
 
@@ -155,9 +157,9 @@ namespace TGH.Common.DataStructures
 				//being searched for, return it directly.
 				foundItem = Data;
 			}
-			else if(searchMethod == SearchMethod.BreadthFirst)
+			else
 			{
-				//Otherwise, if searching breadth first, search each child node for the data first
+				//Otherwise, search for the item across child nodes
 				if(LeftChildNode?.Data?.Equals(item) ?? false)
 				{
 					foundItem = LeftChildNode.Data;
@@ -170,34 +172,12 @@ namespace TGH.Common.DataStructures
 				{
 					//If neither child node contains the target item,
 					//begin searching the grandchildren of the current node
-					foundItem = LeftChildNode.Find(item, searchMethod);
-				}
-				else if(RightChildNode != null)
-				{
-					foundItem = RightChildNode.Find(item, searchMethod);
-				}
-			}
-			else
-			{
-				//If searching depth first, begin by checking
-				//each of the left nodes along the tree
-				if (LeftChildNode?.Data?.Equals(item) ?? false)
-				{
-					foundItem = LeftChildNode.Data;
-				}
-				else if (LeftChildNode != null)
-				{
-					//If neither child node contains the target item,
-					//begin searching the grandchildren of the current node
-					foundItem = LeftChildNode.Find(item, searchMethod);
-				}
-				else if (RightChildNode?.Data?.Equals(item) ?? false)
-				{
-					foundItem = RightChildNode.Data;
-				}
-				else if (RightChildNode != null)
-				{
-					foundItem = RightChildNode.Find(item, searchMethod);
+					foundItem = LeftChildNode.Find(item);
+
+					if(foundItem == null && RightChildNode != null)
+					{
+						foundItem = RightChildNode.Find(item);
+					}
 				}
 			}
 

@@ -26,6 +26,20 @@ namespace TGH.Common.DataStructuresTests.Scaffolding
 		{
 			return TestProperty.ToString();
 		}
+
+
+		public override bool Equals(object obj)
+		{
+			return
+				obj is TestItem testItem &&
+				testItem.TestProperty == TestProperty;
+		}
+
+
+		public override int GetHashCode()
+		{
+			return TestProperty;
+		}
 		#endregion
 	}
 }

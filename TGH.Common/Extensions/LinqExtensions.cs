@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace TGH.Common.Extensions
 {
@@ -16,6 +17,32 @@ namespace TGH.Common.Extensions
 			{
 				dictionary.Add(newEntry.Key, newEntry.Value);
 			}
+		}
+
+
+		public static string Delimit<TItem>
+		(
+			this IEnumerable<TItem> collection,
+			string delimiter
+		)
+		{
+			return
+				collection
+					.Aggregate
+					(
+						new StringBuilder(),
+						(builder, item) =>
+						{
+							builder.Append(item.ToString());
+							builder.Append(delimiter);
+							return builder;
+						},
+						builder =>
+						{
+							string result = builder.ToString();
+							return result.Substring(0, result.LastIndexOf(delimiter));
+						}
+					);
 		}
 
 
