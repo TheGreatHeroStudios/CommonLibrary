@@ -203,6 +203,24 @@ namespace TGH.Common.DataStructures
 
 			return currentCount;
 		}
+		
+		
+		public List<BinaryTreeNode<TItemType>> GetChildNodes()
+		{
+			List<BinaryTreeNode<TItemType>> childNodes =
+				new List<BinaryTreeNode<TItemType>>();
+
+			if (LeftChildNode != null)
+			{
+				childNodes.Add(LeftChildNode);
+
+			}
+
+			if (RightChildNode != null)
+			{
+				childNodes.Add(RightChildNode);
+			}
+		}
 		#endregion
 
 

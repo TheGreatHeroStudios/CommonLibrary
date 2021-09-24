@@ -86,6 +86,12 @@ namespace TGH.Common.DataStructures
 
 			return null;
 		}
+
+
+		public List<BinaryTreeNode<TItemType>> GetNodes()
+		{
+
+		}
 		#endregion
 
 
