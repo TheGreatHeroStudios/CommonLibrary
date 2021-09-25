@@ -90,7 +90,13 @@ namespace TGH.Common.DataStructures
 
 		public List<BinaryTreeNode<TItemType>> GetNodes()
 		{
+			List<BinaryTreeNode<TItemType>> nodes =
+				new List<BinaryTreeNode<TItemType>>();
 
+			nodes.Add(_rootNode);
+			nodes.AddRange(_rootNode.GetChildNodes());
+
+			return nodes;
 		}
 		#endregion
 

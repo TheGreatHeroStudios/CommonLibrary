@@ -213,13 +213,16 @@ namespace TGH.Common.DataStructures
 			if (LeftChildNode != null)
 			{
 				childNodes.Add(LeftChildNode);
-
+				childNodes.AddRange(LeftChildNode.GetChildNodes());
 			}
 
 			if (RightChildNode != null)
 			{
 				childNodes.Add(RightChildNode);
+				childNodes.AddRange(RightChildNode.GetChildNodes());
 			}
+
+			return childNodes;
 		}
 		#endregion
 
