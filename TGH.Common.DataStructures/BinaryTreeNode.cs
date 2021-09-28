@@ -15,6 +15,12 @@ namespace TGH.Common.DataStructures
 		}
 
 
+		public BinaryTreeNode(TItemType item)
+		{
+			Data = item;
+		}
+
+
 		public BinaryTreeNode(IEnumerable<TItemType> items)
 		{
 			BuildChildNodes(items);
