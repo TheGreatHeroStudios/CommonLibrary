@@ -111,6 +111,17 @@ namespace TGH.Common.Extensions
 		}
 
 
+		public static bool None<TItem>
+		(
+			this IEnumerable<TItem> collection,
+			Func<TItem, bool> predicate
+		)
+		{
+			return
+				!collection.Any(predicate);
+		}
+
+
 		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>
 		(
 			this IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs
