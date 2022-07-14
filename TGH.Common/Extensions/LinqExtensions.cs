@@ -46,10 +46,59 @@ namespace TGH.Common.Extensions
 		}
 
 
+		public static IEnumerable<TSource> Except<TSource>
+		(
+			this IEnumerable<TSource> collection,
+			params TSource[] excludedItems
+		)
+		{
+			return collection.Except(excludedItems.AsEnumerable());
+		}
+
+
+		public static IEnumerable<TResult> FullOuterJoin<TLeft, TRight, TKey, TResult>
+		(
+			this IEnumerable<TLeft> left,
+			IEnumerable<TRight> right,
+			Func<TLeft, TKey> leftKeySelector,
+			Func<TRight, TKey> rightKeySelector,
+			Func<TLeft, TRight, TResult> resultSelector
+		)
+		{
+			return
+				left
+					.LeftJoin
+					(
+						right,
+						leftKeySelector,
+						rightKeySelector,
+						resultSelector
+					)
+					.Union
+					(
+						left
+							.RightJoin
+							(
+								right,
+								leftKeySelector,
+								rightKeySelector,
+								resultSelector
+							)
+					);
+		}
+
+
 		public static bool In<TItem>(this TItem item, IEnumerable<TItem> collection)
 		{
 			return
-				collection.Contains(item);
+				collection?.Contains(item) ?? false;
+		}
+
+
+		public static bool In<TItem>(this TItem item, params TItem[] collection)
+		{
+			return
+				collection?.Contains(item) ?? false;
 		}
 
 
@@ -114,11 +163,74 @@ namespace TGH.Common.Extensions
 		public static bool None<TItem>
 		(
 			this IEnumerable<TItem> collection,
-			Func<TItem, bool> predicate
+			Func<TItem, bool> predicate = null
+		)
+		{
+			if(predicate == null)
+			{
+				predicate = item => true;
+			}
+
+			return
+				!collection.Any(predicate);
+		}
+
+
+		public static IEnumerable<TResult> RightAntiJoin<TLeft, TRight, TKey, TResult>
+		(
+			this IEnumerable<TLeft> left,
+			IEnumerable<TRight> right,
+			Func<TLeft, TKey> leftKeySelector,
+			Func<TRight, TKey> rightKeySelector,
+			Func<TRight, TResult> resultSelector
+		)
+			where TResult : class
+		{
+			return
+				left
+					.RightJoin
+					(
+						right,
+						leftKeySelector,
+						rightKeySelector,
+						(left, right) =>
+							left == null ?
+								resultSelector(right) :
+								null
+					)
+					.Where
+					(
+						result =>
+							result != null
+					);
+		}
+
+
+		public static IEnumerable<TResult> RightJoin<TLeft, TRight, TKey, TResult>
+		(
+			this IEnumerable<TLeft> left,
+			IEnumerable<TRight> right,
+			Func<TLeft, TKey> leftKeySelector,
+			Func<TRight, TKey> rightKeySelector,
+			Func<TLeft, TRight, TResult> resultSelector
 		)
 		{
 			return
-				!collection.Any(predicate);
+				right
+					.GroupJoin
+					(
+						left,
+						rightKeySelector,
+						leftKeySelector,
+						(rightItem, leftGroup) =>
+							new { rightItem, leftGroup }
+					)
+					.SelectMany
+					(
+						joinedResult => joinedResult.leftGroup.DefaultIfEmpty(),
+						(joinedResult, leftItem) =>
+							resultSelector(leftItem, joinedResult.rightItem)
+					);
 		}
 
 
