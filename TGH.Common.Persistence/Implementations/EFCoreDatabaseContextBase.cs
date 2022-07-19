@@ -89,6 +89,10 @@ namespace TGH.Common.Persistence.Implementations
 			where TEntityType : class
 		{
 			AddRange(initialPayload);
+			/*foreach(TEntityType entity in initialPayload)
+			{
+				ChangeTracker.TrackGraph(entity, entry => entry.Entry.State = EntityState.Added);
+			}*/
 
 			if (!deferCommit)
 			{

@@ -20,6 +20,17 @@ namespace TGH.Common.Extensions
 		}
 
 
+		public static IEnumerable<(TItem1, TItem2)> CrossJoin<TItem1, TItem2>
+		(
+			this IEnumerable<TItem1> sequence1,
+			IEnumerable<TItem2> sequence2
+		)
+		{
+			return
+				sequence1.SelectMany(item1 => sequence2.Select(item2 => (item1, item2)));
+		}
+
+
 		public static string Delimit<TItem>
 		(
 			this IEnumerable<TItem> collection,

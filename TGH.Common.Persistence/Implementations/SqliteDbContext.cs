@@ -10,6 +10,7 @@ namespace TGH.Common.Persistence.Implementations
 		private string _targetDatabaseRootedFilePath;
 		private string _sourceDatabaseTemplateFilePath;
 		private Assembly _configurationAssembly;
+		private bool _enableDebugLogging;
 		#endregion
 
 
@@ -44,11 +45,13 @@ namespace TGH.Common.Persistence.Implementations
 		public SqliteDbContext
 		(
 			string targetDatabaseRootedFilePath,
-			Assembly configurationAssembly = null
+			Assembly configurationAssembly = null,
+			bool enableDebugLogging = false
 		)
 		{
 			_targetDatabaseRootedFilePath = targetDatabaseRootedFilePath;
-			_configurationAssembly = configurationAssembly;
+			_configurationAssembly = configurationAssembly ?? Assembly.GetExecutingAssembly();
+			_enableDebugLogging = enableDebugLogging;
 		}
 
 
@@ -85,12 +88,14 @@ namespace TGH.Common.Persistence.Implementations
 		(
 			string targetDatabaseRootedFilePath,
 			string sourceDatabaseTemplateFilePath,
-			Assembly configurationAssembly = null
+			Assembly configurationAssembly = null,
+			bool enableDebugLogging = false
 		)
 		{
 			_targetDatabaseRootedFilePath = targetDatabaseRootedFilePath;
 			_sourceDatabaseTemplateFilePath = sourceDatabaseTemplateFilePath;
-			_configurationAssembly = configurationAssembly;
+			_configurationAssembly = configurationAssembly ?? Assembly.GetExecutingAssembly();
+			_enableDebugLogging = enableDebugLogging;
 		}
 		#endregion
 
@@ -123,6 +128,12 @@ namespace TGH.Common.Persistence.Implementations
 						TargetDatabaseRootedFilePath
 					)
 				);
+
+			if(_enableDebugLogging)
+			{
+				optionsBuilder.EnableDetailedErrors();
+				optionsBuilder.EnableSensitiveDataLogging();
+			}
 
 			base.OnConfiguring(optionsBuilder);
 		}
