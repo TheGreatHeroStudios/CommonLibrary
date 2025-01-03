@@ -103,7 +103,6 @@ namespace TGH.Common.Persistence.Implementations
 		}
 
 
-
 		public IEnumerable<TEntityType> Read<TEntityType>
 		(
 			Func<TEntityType, bool> predicate

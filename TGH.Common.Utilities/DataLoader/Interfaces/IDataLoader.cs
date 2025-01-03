@@ -17,6 +17,6 @@ namespace TGH.Common.Utilities.DataLoader.Interfaces
 		IEnumerable<TDataType> ReadDataIntoMemory();
 
 
-		IEnumerable<TDataType> LoadDataIntoDatabase(IEnumerable<TDataType> payload);
+		void StageDataForInsert(IEnumerable<TDataType> payload, bool deferCommit = false);
 	}
 }

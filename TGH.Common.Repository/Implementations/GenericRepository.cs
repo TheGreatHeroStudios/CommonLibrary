@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using TGH.Common.Persistence.Interfaces;
 using TGH.Common.Repository.Interfaces;
 
@@ -47,6 +50,29 @@ namespace TGH.Common.Repository.Implementations
 		{
 			return
 				_context.Read(predicate);
+		}
+
+
+		public IQueryable<TEntityType> RetrieveEntities<TEntityType>
+		(
+			string procedureName,
+			params object[] parameters
+		)
+			where TEntityType : class
+		{
+			string paramList =
+				parameters
+					.Aggregate
+					(
+						new StringBuilder(),
+						(sb, obj) => sb.Append($"{obj}, "),
+						sb => sb.ToString().TrimEnd(',', ' ')
+					);
+
+			return
+				(_context as DbContext)
+					.Set<TEntityType>()
+					.FromSqlInterpolated($"EXEC {procedureName} {paramList}");
 		}
 
 

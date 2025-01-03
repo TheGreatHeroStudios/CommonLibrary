@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using TGH.Common.Patterns.IoC;
+using TGH.Common.Persistence.Interfaces;
 using TGH.Common.Repository.Interfaces;
 using TGH.Common.Utilities.DataLoader.Extensions;
 using TGH.Common.Utilities.DataLoader.Interfaces;
@@ -27,7 +28,7 @@ namespace TGH.Common.Utilities.DataLoader.Implementations
 		private HttpClient _dataLoaderClient;
 		private int? _actualRecordCount;
 
-		protected IGenericRepository _repository;
+		protected IDatabaseContext _context;
 		#endregion
 
 
@@ -35,8 +36,8 @@ namespace TGH.Common.Utilities.DataLoader.Implementations
 		#region Constructor(s)
 		public DataLoader()
 		{
-			_repository =
-				DependencyManager.ResolveService<IGenericRepository>();
+			_context =
+				DependencyManager.ResolveService<IDatabaseContext>();
 		}
 
 
@@ -50,8 +51,7 @@ namespace TGH.Common.Utilities.DataLoader.Implementations
 				defaultRequestHeaders?.ToList().ForEach(header => AddRequestHeader(header.Key, header.Value));
 			}
 
-			_repository =
-				DependencyManager.ResolveService<IGenericRepository>();
+			_context = DependencyManager.ResolveService<IDatabaseContext>();
 		}
 
 
@@ -59,8 +59,7 @@ namespace TGH.Common.Utilities.DataLoader.Implementations
 		{
 			_dataLoaderClient = client;
 
-			_repository =
-				DependencyManager.ResolveService<IGenericRepository>();
+			_context = DependencyManager.ResolveService<IDatabaseContext>();
 		}
 		#endregion
 
@@ -76,7 +75,7 @@ namespace TGH.Common.Utilities.DataLoader.Implementations
 					//If the record count from the database has not
 					//yet been checked, check it and cache the result
 					_actualRecordCount =
-						_repository.GetRecordCount(RecordRetrievalPredicate);
+						_context.Count(RecordRetrievalPredicate);
 				}
 
 				return _actualRecordCount.Value;
@@ -93,37 +92,31 @@ namespace TGH.Common.Utilities.DataLoader.Implementations
 		public abstract IEnumerable<TDataType> ReadDataIntoMemory();
 
 
-		public IEnumerable<TDataType> LoadDataIntoDatabase(IEnumerable<TDataType> payload)
+		public void StageDataForInsert(IEnumerable<TDataType> payload, bool deferCommit = false)
 		{
 			if (ActualRecordCount == 0)
 			{
 				//If no entities have been loaded, load them into the database
-				_repository
-					.PersistEntities
+				_context
+					.Create
 					(
 						payload,
-						KeySelector
+						deferCommit
 					);
 			}
 			else if (ActualRecordCount != ExpectedRecordCount)
 			{
 				//If the number of entities does not match the expected value 
 				//for the data loader, truncate the table before reloading
-				_repository.DeleteEntities<TDataType>(entity => true);
+				_context.Delete<TDataType>(entity => true, deferCommit);
 
-				_repository
-					.PersistEntities
+				_context
+					.Create
 					(
 						payload,
-						KeySelector
+						deferCommit
 					);
 			}
-
-			//After persisting entities (or not) retrieve and 
-			//return them from the underlying database context
-			return
-				_repository
-					.RetrieveEntities(RecordRetrievalPredicate);
 		}
 		#endregion
 
