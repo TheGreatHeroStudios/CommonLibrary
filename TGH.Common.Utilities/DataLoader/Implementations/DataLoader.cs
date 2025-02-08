@@ -66,7 +66,7 @@ namespace TGH.Common.Utilities.DataLoader.Implementations
 
 
 		#region Interface Implementations
-		public int ActualRecordCount
+		public int ActuaRecordCount
 		{
 			get
 			{
@@ -94,7 +94,7 @@ namespace TGH.Common.Utilities.DataLoader.Implementations
 
 		public void StageDataForInsert(IEnumerable<TDataType> payload, bool deferCommit = false)
 		{
-			if (ActualRecordCount == 0)
+			if (ActuaRecordCount == 0)
 			{
 				//If no entities have been loaded, load them into the database
 				_context
@@ -104,7 +104,7 @@ namespace TGH.Common.Utilities.DataLoader.Implementations
 						deferCommit
 					);
 			}
-			else if (ActualRecordCount != ExpectedRecordCount)
+			else if (ActuaRecordCount != ExpectedRecordCount)
 			{
 				//If the number of entities does not match the expected value 
 				//for the data loader, truncate the table before reloading
@@ -150,9 +150,9 @@ namespace TGH.Common.Utilities.DataLoader.Implementations
 
 				return response;
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				throw ex;
+				throw;
 			}
 		}
 

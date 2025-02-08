@@ -6,7 +6,7 @@ namespace TGH.Common.Utilities.DataLoader.Interfaces
 	public interface IDataLoader<TDataType>
 		where TDataType : class
 	{
-		int ActualRecordCount { get; }
+		int ActuaRecordCount { get; }
 		int ExpectedRecordCount { get; }
 
 		Func<TDataType, int> KeySelector { get; }
