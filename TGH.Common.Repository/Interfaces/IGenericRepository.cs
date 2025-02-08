@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TGH.Common.Repository.Interfaces
 {
@@ -61,6 +62,32 @@ namespace TGH.Common.Repository.Interfaces
 		IEnumerable<TEntityType> RetrieveEntities<TEntityType>
 		(
 			Func<TEntityType, bool> predicate
+		)
+			where TEntityType : class;
+
+
+		/// <summary>
+		///		Retrieves a set of entities from the database
+		///		by calling the stored procedure named <paramref name="procedureName"/>
+		///		and passing it the parameters specified by <paramref name="parameters"/>
+		/// </summary>
+		/// <typeparam name="TEntityType">
+		///		The type of entity to retrieve
+		/// </typeparam>
+		/// <param name="procedureName">
+		///		The name of the stored procedure to call
+		/// </param>
+		/// <param name="parameters">
+		///		A collection of zero or more parameters to be parsed and passed to the stored procedure.
+		/// </param>
+		/// <returns>
+		///		A queryable collection of <typeparamref name="TEntityType"/>
+		///		returned from the procedure.
+		/// </returns>
+		IQueryable<TEntityType> RetrieveEntities<TEntityType>
+		(
+			string procedureName,
+			params object[] parameters
 		)
 			where TEntityType : class;
 

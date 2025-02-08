@@ -13,5 +13,7 @@ namespace TGH.Common
 
 		public static readonly string EXECUTABLE_DIRECTORY =
 			$"{CurrentDirectory}{PATH_SEPARATOR}";
+
+		public static readonly string DEFAULT_LOG_FILEPATH = $@"{EXECUTABLE_DIRECTORY}";
 	}
 }
